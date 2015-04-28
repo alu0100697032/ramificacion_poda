@@ -1,7 +1,9 @@
 n = 7
-m = 3 subconjunto de n
+m = 3 subconjunto de n 
 la suma de las distancias tiene que ser maxima
 
 busqueda local se parte de una solucion, se intercambia y si mejora se cambia (la mejor) 
 se para cuando no mejore ninguna solucion, 
 se debe partir de una solucion previa
+
+el centroide se recalcula con los puntos que estan en la solucion
