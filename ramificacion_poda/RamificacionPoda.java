@@ -13,19 +13,23 @@ public class RamificacionPoda {
 	
 	public RamificacionPoda(String nombreFichero) throws NumberFormatException, IOException{
 		
+		//lectura del fichero 
 		FileReader f = new FileReader(nombreFichero);
 	    BufferedReader b = new BufferedReader(f);
+	    //inicialización de los atributos
 	    numeroElementos = Integer.parseInt(b.readLine());
 	    dimensionElemento = Integer.parseInt(b.readLine());
-	    String [] coordenadasElemento;
 	    listaCoordenadas = new ArrayList<String[]>();
+	    //recorremos las lineas que representan cada elemento
 	    for(int i = 0; i < numeroElementos; i++){
-	    	coordenadasElemento = b.readLine().split("\t", dimensionElemento); 
-		    listaCoordenadas.add(coordenadasElemento);
+	    	//separamos las coordenadas y las metemos en un array
+		    listaCoordenadas.add(b.readLine().split("\t", dimensionElemento));
 	    }
-	    b.close();
+	    b.close();//cerramos es buffer de lectura
 	}
-
+	/*
+	 * funcion que muestra los datos cargados
+	 */
 	public void mostrarDatos(){
 		System.out.println("Número de elementos: " + numeroElementos);
 		System.out.println("Dimensión del elemento: " + dimensionElemento);
@@ -33,9 +37,15 @@ public class RamificacionPoda {
 			System.out.println(java.util.Arrays.toString(listaCoordenadas.get(i)));
 		}
 	}
+	/*
+	 * algoritmo greedy 
+	 */
+	public void greedy(){
+		
+	}
 	
 	/*
-	 * GETTER Y SETTER
+	 * metodos de acceso a los atributos
 	 */
 	public int getNumeroElementos() {
 		return numeroElementos;
