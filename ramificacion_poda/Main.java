@@ -10,8 +10,10 @@ public class Main {
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		// TODO Auto-generated method stub
-	    rp = new RamificacionPoda("src/instancias/max_div_15_3.txt");
+	    rp = new RamificacionPoda("src/instancias/prueba2.txt");
 	    rp.mostrarDatos();
+	    System.out.println();
+	    rp.greedy(2);
 	}
 
 }
