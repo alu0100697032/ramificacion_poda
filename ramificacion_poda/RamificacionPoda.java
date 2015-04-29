@@ -66,35 +66,37 @@ public class RamificacionPoda {
 	
 	public void greedy(int m){
 		ArrayList<ArrayList<Float>> S = new ArrayList<>(); //guarda el conjunto de elementos del resultado final
-		ArrayList<Float> centroGravedad = obtenerCentroGravedad(listaCoordenadas);
+		//creamos una copia de coordenadas para ir borrando los elementos
+		ArrayList<ArrayList<Float>> copiaCoordenadas = (ArrayList<ArrayList<Float>>) listaCoordenadas.clone();
+		ArrayList<Float> centroGravedad = obtenerCentroGravedad(copiaCoordenadas);
 		while(S.size() < m){
-			S.add(obtenerElementoMasAlejado(centroGravedad));
+			S.add(obtenerElementoMasAlejado(centroGravedad, copiaCoordenadas));
 			centroGravedad = obtenerCentroGravedad(S);
 		}
 		mostrarLista(S);
 	}
 	
 	//devuelve el elemento mas alejado del centro de gravedad
-	public ArrayList<Float> obtenerElementoMasAlejado(ArrayList<Float> centroGravedad){
+	public ArrayList<Float> obtenerElementoMasAlejado(ArrayList<Float> centroGravedad, ArrayList<ArrayList<Float>> lista){
 		ArrayList<Float> elemento =  new ArrayList<>();
 		int posicionElemento = 0;
 		float distanciaEuclidea = 0; 
 		
-		for(int i = 0; i < listaCoordenadas.size(); i++){//recorremos todos los puntos
+		for(int i = 0; i < lista.size(); i++){//recorremos todos los puntos
 			float auxiliar = 0;
 			//inicio de la formula de la distancia euclidea
 			for(int j = 0; j < dimensionElemento; j++){
-				auxiliar += Math.pow((listaCoordenadas.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
+				auxiliar += Math.pow((lista.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
 			}
 			auxiliar = (float) Math.sqrt(auxiliar);//raiz
-			//fin de la formual de la distancia euclidea
+			//fin de la formula de la distancia euclidea
 			if(auxiliar > distanciaEuclidea){//comprobamos el maximo
 				distanciaEuclidea = auxiliar;
 				posicionElemento = i;
 			}
 		}
-		elemento = listaCoordenadas.get(posicionElemento);	//guardamos las coordenadas en el elemento que devolvemos
-		listaCoordenadas.remove(posicionElemento);			//borramos el elemento, queda en la solución final 
+		elemento = lista.get(posicionElemento);	//guardamos las coordenadas en el elemento que devolvemos
+		lista.remove(posicionElemento);			//borramos el elemento, queda en la solución final 
 		return elemento;
 	}
 		
@@ -112,6 +114,43 @@ public class RamificacionPoda {
 		return centroGravedad;
 	}
 	
+	/********************************************************************************************************
+	 **************************************ALGORITMO GREEDY PROPUESTO****************************************
+	 ********************************************************************************************************/
+	
+	public void greedyOwn(int m){
+		//guarda el conjunto de elementos del resultado final, inicialmente son todos los puntos 
+		//(copia de la lista de coordenadas)
+		ArrayList<ArrayList<Float>> S = (ArrayList<ArrayList<Float>>) listaCoordenadas.clone(); 
+		ArrayList<Float> centroGravedad = obtenerCentroGravedad(S);
+		while(S.size() > m){
+			obtenerElementoMasCercano(centroGravedad, S);
+			centroGravedad = obtenerCentroGravedad(S);
+		}
+		mostrarLista(S);
+	}
+	
+	//devuelve el elemento mas alejado del centro de gravedad
+	public void obtenerElementoMasCercano(ArrayList<Float> centroGravedad, ArrayList<ArrayList<Float>> lista){
+		int posicionElemento = 0;
+		float distanciaEuclidea = 99999999; 
+		
+		for(int i = 0; i < lista.size(); i++){//recorremos todos los puntos
+			float auxiliar = 0;
+			//inicio de la formula de la distancia euclidea
+			for(int j = 0; j < dimensionElemento; j++){
+				auxiliar += Math.pow((lista.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
+			}
+			auxiliar = (float) Math.sqrt(auxiliar);//raiz
+			//fin de la formula de la distancia euclidea
+			if(auxiliar < distanciaEuclidea){//comprobamos el minimo
+				distanciaEuclidea = auxiliar;
+				posicionElemento = i;
+			}
+		}
+		lista.remove(posicionElemento);			//borramos el elemento
+	}
+		
 	/*
 	 * metodos de acceso a los atributos
 	 */
