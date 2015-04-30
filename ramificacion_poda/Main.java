@@ -8,15 +8,18 @@ public class Main {
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		// TODO Auto-generated method stub
-	    rp = new RamificacionPoda("src/instancias/prueba.txt");
+	    rp = new RamificacionPoda("src/instancias/max_div_20_2.txt");
 	    rp.mostrarDatos();
 	    System.out.println();
 	    //GREEDY
 	    System.out.println("GREEDY");
-	    rp.greedy(2);
+	    rp.greedy(3);
 	    //GREEDY PROPUESTO
 	    System.out.println("GREEDY PROPUESTO");
-	    rp.greedyOwn(2);
+	    rp.greedyOwn(3);
+	    //GRASP
+	    System.out.println("GRASP");
+	    rp.grasp(3, 3);
 	}
 
 }

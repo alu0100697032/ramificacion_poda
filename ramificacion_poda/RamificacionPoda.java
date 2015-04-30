@@ -1,14 +1,9 @@
 package ramificacion_poda;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Random;
 import java.util.Scanner;
 
 public class RamificacionPoda {
@@ -149,6 +144,64 @@ public class RamificacionPoda {
 			}
 		}
 		lista.remove(posicionElemento);			//borramos el elemento
+	}
+	
+	/********************************************************************************************************
+	 ******************************************ALGORITMO GRASP***********************************************
+	 ********************************************************************************************************/
+	
+	public void grasp(int m, int lrc){
+		ArrayList<ArrayList<Float>> S = new ArrayList<>(); //guarda el conjunto de elementos del resultado final
+		//creamos una copia de coordenadas para ir borrando los elementos
+		ArrayList<ArrayList<Float>> copiaCoordenadas = (ArrayList<ArrayList<Float>>) listaCoordenadas.clone();
+		ArrayList<Float> centroGravedad = obtenerCentroGravedad(copiaCoordenadas);
+		while(S.size() < m){
+			S.add(obtenerElementoMasAlejadoLRC(centroGravedad, copiaCoordenadas, lrc));
+			centroGravedad = obtenerCentroGravedad(S);
+		}
+		mostrarLista(S);
+	}
+	
+	//devuelve el elemento mas alejado del centro de gravedad segun la LRC
+	public ArrayList<Float> obtenerElementoMasAlejadoLRC(ArrayList<Float> centroGravedad, ArrayList<ArrayList<Float>> lista, int l){
+		//guarda las posiciones de los elementos de la lrc para poder borrarlo de la lista mas tarde
+		ArrayList<Integer> posicionesElementosLRC =  new ArrayList<>(); 
+		//guarda los elementos de la lrc
+		ArrayList<ArrayList<Float>> lrc =  new ArrayList<>();
+		//hacemos una copia para ir borrando y poder buscar los l mejores elementos
+		ArrayList<ArrayList<Float>> copiaLista = (ArrayList<ArrayList<Float>>) lista.clone();
+		
+		int posicionElemento = 0;
+		//creamos la lrc
+		for(int h = 0; h < l; h++){//tamaño de la lrc
+			float distanciaEuclideaMinima = 0;
+			for(int i = 0; i < copiaLista.size(); i++){//recorremos todos los puntos
+				float auxiliar = 0;
+				//inicio de la formula de la distancia euclidea
+				for(int j = 0; j < dimensionElemento; j++){
+					auxiliar += Math.pow((copiaLista.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
+				}
+				auxiliar = (float) Math.sqrt(auxiliar);//raiz
+				//fin de la formula de la distancia euclidea
+				if(auxiliar > distanciaEuclideaMinima){//comprobamos el maximo
+					distanciaEuclideaMinima = auxiliar;
+					posicionElemento = i;
+				}
+			}
+			//añadimos a la lrc el elemento mas alejado, guardamos la posicion 
+			//y lo borramos de la lista copiada para buscar el siguiente mayor
+			lrc.add(copiaLista.get(posicionElemento));
+			posicionesElementosLRC.add(posicionElemento);
+			copiaLista.remove(posicionElemento);
+		}
+		//de la lrc seleccionamos uno aleatorio, lo borramos de la lista de puntos 
+		//y lo devolvemos para guardarlo en la solucion final 
+		ArrayList<Float> elemento =  new ArrayList<>();
+		Random random = new Random();
+		int elementoSeleccionadoLRC = random.nextInt(lrc.size());
+		elemento = lrc.get(elementoSeleccionadoLRC);
+		lista.remove(posicionesElementosLRC.get(elementoSeleccionadoLRC));//borramos el elemento, queda en la solución final 
+		return elemento;
 	}
 		
 	/*
