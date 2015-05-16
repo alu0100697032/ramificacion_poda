@@ -158,6 +158,7 @@ public class RamificacionPoda {
 		while(S.size() < m){
 			S.add(obtenerElementoMasAlejadoLRC(centroGravedad, copiaCoordenadas, lrc));
 			centroGravedad = obtenerCentroGravedad(S);
+			//busquedaLocal(centroGravedad, S, copiaCoordenadas);
 		}
 		mostrarLista(S);
 	}
@@ -203,7 +204,50 @@ public class RamificacionPoda {
 		lista.remove(posicionesElementosLRC.get(elementoSeleccionadoLRC));//borramos el elemento, queda en la solución final 
 		return elemento;
 	}
+	/********************************************************************************************************
+	 ******************************************BUSQUEDA LOCAL************************************************
+	 ********************************************************************************************************/
+	 
+	public void busquedaLocal(ArrayList<Float> centroGravedad, ArrayList<ArrayList<Float>> lista, ArrayList<ArrayList<Float>> copia){
 		
+		int posicionElemento = 0;
+		float distanciaEuclidea = 0; 
+		boolean mejora = false;
+		do{
+			for(int i = 0; i < copia.size(); i++){//recorremos todos los puntos
+				float auxiliar = 0;
+				//inicio de la formula de la distancia euclidea
+				for(int j = 0; j < dimensionElemento; j++){
+					auxiliar += Math.pow((lista.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
+				}
+				auxiliar = (float) Math.sqrt(auxiliar);//raiz
+				//fin de la formula de la distancia euclidea
+				if(auxiliar > distanciaEuclidea){//comprobamos el maximo
+					distanciaEuclidea = auxiliar;
+					posicionElemento = i;
+				}//endif
+			}//endfor
+			
+			for(int i = 0; i < lista.size(); i++){//recorremos todos los puntos
+				float distanciaEuclideaMejorable= 0;
+				//inicio de la formula de la distancia euclidea
+				for(int j = 0; j < dimensionElemento; j++){
+					distanciaEuclideaMejorable += Math.pow((lista.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
+				}
+				distanciaEuclideaMejorable = (float) Math.sqrt(distanciaEuclideaMejorable);//raiz
+				//fin de la formula de la distancia euclidea
+				if(distanciaEuclideaMejorable < distanciaEuclidea){
+					lista.add(copia.get(posicionElemento));
+					copia.remove(posicionElemento);
+					copia.add(lista.get(i));
+					lista.remove(i);
+					mejora = true;
+					break;
+				}//endif
+			}//endfor
+			centroGravedad = obtenerCentroGravedad(lista);
+		}while(mejora == true);
+	}
 	/*
 	 * metodos de acceso a los atributos
 	 */
