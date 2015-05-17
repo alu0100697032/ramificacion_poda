@@ -158,8 +158,8 @@ public class RamificacionPoda {
 		while(S.size() < m){
 			S.add(obtenerElementoMasAlejadoLRC(centroGravedad, copiaCoordenadas, lrc));
 			centroGravedad = obtenerCentroGravedad(S);
-			//busquedaLocal(centroGravedad, S, copiaCoordenadas);
 		}
+		busquedaLocal(centroGravedad, S, copiaCoordenadas);
 		mostrarLista(S);
 	}
 	
@@ -210,15 +210,20 @@ public class RamificacionPoda {
 	 
 	public void busquedaLocal(ArrayList<Float> centroGravedad, ArrayList<ArrayList<Float>> lista, ArrayList<ArrayList<Float>> copia){
 		
-		int posicionElemento = 0;
-		float distanciaEuclidea = 0; 
 		boolean mejora = false;
+		//repetir hasta que no mejore
 		do{
-			for(int i = 0; i < copia.size(); i++){//recorremos todos los puntos
+			int posicionElemento = 0;
+			float distanciaEuclidea = 0; 
+			float distanciaEuclideaMejorable = 9999999;
+			int posicionElementoMejorable = 0;
+			mejora = false;
+			//recorremos los puntos que no estan en la solucion para ver cual es el mas alejado del centro de gravedad
+			for(int i = 0; i < copia.size(); i++){
 				float auxiliar = 0;
 				//inicio de la formula de la distancia euclidea
 				for(int j = 0; j < dimensionElemento; j++){
-					auxiliar += Math.pow((lista.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
+					auxiliar += Math.pow((copia.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
 				}
 				auxiliar = (float) Math.sqrt(auxiliar);//raiz
 				//fin de la formula de la distancia euclidea
@@ -227,24 +232,29 @@ public class RamificacionPoda {
 					posicionElemento = i;
 				}//endif
 			}//endfor
-			
-			for(int i = 0; i < lista.size(); i++){//recorremos todos los puntos
-				float distanciaEuclideaMejorable= 0;
+			//recorremos los puntos que estan en la solucion para ver cual es el mas cercano al centro de gravedad
+			for(int i = 0; i < lista.size(); i++){
+				float auxiliar = 0;
 				//inicio de la formula de la distancia euclidea
 				for(int j = 0; j < dimensionElemento; j++){
-					distanciaEuclideaMejorable += Math.pow((lista.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
+					auxiliar += Math.pow((lista.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
 				}
-				distanciaEuclideaMejorable = (float) Math.sqrt(distanciaEuclideaMejorable);//raiz
+				auxiliar = (float) Math.sqrt(auxiliar);//raiz
 				//fin de la formula de la distancia euclidea
-				if(distanciaEuclideaMejorable < distanciaEuclidea){
-					lista.add(copia.get(posicionElemento));
-					copia.remove(posicionElemento);
-					copia.add(lista.get(i));
-					lista.remove(i);
-					mejora = true;
-					break;
+				if(distanciaEuclideaMejorable > auxiliar){//mas cercano
+					distanciaEuclideaMejorable = auxiliar;
+					posicionElementoMejorable = i;
 				}//endif
 			}//endfor
+			//si mejora la solucion se cambia
+			if(distanciaEuclidea > distanciaEuclideaMejorable){
+				lista.add(copia.get(posicionElemento));
+				copia.remove(posicionElemento);
+				//copia.add(lista.get(posicionElementoMejorable));
+				lista.remove(posicionElementoMejorable);
+				mejora = true;
+			}
+			//se recalcula en centro de gravedad
 			centroGravedad = obtenerCentroGravedad(lista);
 		}while(mejora == true);
 	}
