@@ -59,7 +59,7 @@ public class RamificacionPoda {
 	 *****************************************ALGORITMO GREEDY***********************************************
 	 ********************************************************************************************************/
 	
-	public void greedy(int m){
+	public ArrayList<ArrayList<Float>> greedy(int m){
 		ArrayList<ArrayList<Float>> S = new ArrayList<>(); //guarda el conjunto de elementos del resultado final
 		//creamos una copia de coordenadas para ir borrando los elementos
 		ArrayList<ArrayList<Float>> copiaCoordenadas = (ArrayList<ArrayList<Float>>) listaCoordenadas.clone();
@@ -68,7 +68,8 @@ public class RamificacionPoda {
 			S.add(obtenerElementoMasAlejado(centroGravedad, copiaCoordenadas));
 			centroGravedad = obtenerCentroGravedad(S);
 		}
-		mostrarLista(S);
+		//mostrarLista(S);
+		return S;
 	}
 	
 	//devuelve el elemento mas alejado del centro de gravedad
@@ -113,7 +114,7 @@ public class RamificacionPoda {
 	 **************************************ALGORITMO GREEDY PROPUESTO****************************************
 	 ********************************************************************************************************/
 	
-	public void greedyOwn(int m){
+	public ArrayList<ArrayList<Float>> greedyOwn(int m){
 		//guarda el conjunto de elementos del resultado final, inicialmente son todos los puntos 
 		//(copia de la lista de coordenadas)
 		ArrayList<ArrayList<Float>> S = (ArrayList<ArrayList<Float>>) listaCoordenadas.clone(); 
@@ -122,7 +123,8 @@ public class RamificacionPoda {
 			obtenerElementoMasCercano(centroGravedad, S);
 			centroGravedad = obtenerCentroGravedad(S);
 		}
-		mostrarLista(S);
+		//mostrarLista(S);
+		return S;
 	}
 	
 	//devuelve el elemento mas alejado del centro de gravedad
@@ -150,7 +152,7 @@ public class RamificacionPoda {
 	 ******************************************ALGORITMO GRASP***********************************************
 	 ********************************************************************************************************/
 	
-	public void grasp(int m, int lrc){
+	public ArrayList<ArrayList<Float>> grasp(int m, int lrc){
 		ArrayList<ArrayList<Float>> S = new ArrayList<>(); //guarda el conjunto de elementos del resultado final
 		//creamos una copia de coordenadas para ir borrando los elementos
 		ArrayList<ArrayList<Float>> copiaCoordenadas = (ArrayList<ArrayList<Float>>) listaCoordenadas.clone();
@@ -160,7 +162,8 @@ public class RamificacionPoda {
 			centroGravedad = obtenerCentroGravedad(S);
 		}
 		busquedaLocal(centroGravedad, S, copiaCoordenadas);
-		mostrarLista(S);
+		//mostrarLista(S);
+		return S;
 	}
 	
 	//devuelve el elemento mas alejado del centro de gravedad segun la LRC
@@ -258,6 +261,57 @@ public class RamificacionPoda {
 			centroGravedad = obtenerCentroGravedad(lista);
 		}while(mejora == true);
 	}
+	
+	/********************************************************************************************************
+	 ***************************************RAMIFICACIÓN Y PODA**********************************************
+	 ********************************************************************************************************/
+	public void ramificacionPoda(int m, ArrayList<ArrayList<Float>> cotaInicial){
+		float cota = dispersion(cotaInicial);
+		System.out.println("Cota inicial: " + cota);
+		ArrayList<ArrayList<ArrayList<Float>>> ramificacion = new ArrayList<>();
+		//ArrayList<ArrayList<Float>> subconjunto = new ArrayList<>();
+		ArrayList<ArrayList<Float>> copiaLista = new ArrayList<>();
+		/**/
+		for(int i = 0; i < listaCoordenadas.size(); i++){
+			copiaLista = (ArrayList<ArrayList<Float>>) listaCoordenadas.clone();
+			//subconjunto.clear();
+			ArrayList<ArrayList<Float>> subconjunto = new ArrayList<>();
+			subconjunto.add(copiaLista.get(i));
+			copiaLista.remove(i);
+			for(int j = 0; j < m - 1; j++){
+				subconjunto.add(obtenerElementoMasAlejado(obtenerCentroGravedad(subconjunto), copiaLista));
+			}
+			if(dispersion(subconjunto) > cota){
+				ramificacion.add(subconjunto);
+			}
+		}
+		
+		
+		
+		
+		System.out.println("Mejoras al grasp:");
+		for(int i = 0; i < ramificacion.size(); i++){
+			mostrarLista(ramificacion.get(i));
+			System.out.println(dispersion(ramificacion.get(i)));
+			System.out.println("");
+		}
+	}
+	
+	public float dispersion(ArrayList<ArrayList<Float>> lista){
+		ArrayList<Float> centroGravedad = obtenerCentroGravedad(lista);
+		float dispersion = 0; 
+		for(int i = 0; i < lista.size(); i++){
+			float auxiliar = 0;
+			//inicio de la formula de la distancia euclidea
+			for(int j = 0; j < dimensionElemento; j++){
+				auxiliar += Math.pow((lista.get(i).get(j) - centroGravedad.get(j)), 2);//resta + cuadrado
+			}
+			auxiliar = (float) Math.sqrt(auxiliar);//raiz
+			//fin de la formula de la distancia euclidea
+			dispersion += auxiliar;
+		}//endfor
+		return dispersion;
+	} 
 	/*
 	 * metodos de acceso a los atributos
 	 */
