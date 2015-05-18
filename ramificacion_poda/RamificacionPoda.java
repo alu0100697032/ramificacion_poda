@@ -68,7 +68,8 @@ public class RamificacionPoda {
 			S.add(obtenerElementoMasAlejado(centroGravedad, copiaCoordenadas));
 			centroGravedad = obtenerCentroGravedad(S);
 		}
-		//mostrarLista(S);
+		mostrarLista(S);
+		System.out.println("Z: " + dispersion(S));
 		return S;
 	}
 	
@@ -123,7 +124,8 @@ public class RamificacionPoda {
 			obtenerElementoMasCercano(centroGravedad, S);
 			centroGravedad = obtenerCentroGravedad(S);
 		}
-		//mostrarLista(S);
+		mostrarLista(S);
+		System.out.println("Z: " + dispersion(S));
 		return S;
 	}
 	
@@ -161,8 +163,9 @@ public class RamificacionPoda {
 			S.add(obtenerElementoMasAlejadoLRC(centroGravedad, copiaCoordenadas, lrc));
 			centroGravedad = obtenerCentroGravedad(S);
 		}
-		busquedaLocal(centroGravedad, S, copiaCoordenadas);
-		//mostrarLista(S);
+		busquedaLocal(S, copiaCoordenadas);
+		mostrarLista(S);
+		System.out.println("Z: " + dispersion(S));
 		return S;
 	}
 	
@@ -211,8 +214,8 @@ public class RamificacionPoda {
 	 ******************************************BUSQUEDA LOCAL************************************************
 	 ********************************************************************************************************/
 	 
-	public void busquedaLocal(ArrayList<Float> centroGravedad, ArrayList<ArrayList<Float>> lista, ArrayList<ArrayList<Float>> copia){
-		
+	public void busquedaLocal(ArrayList<ArrayList<Float>> lista, ArrayList<ArrayList<Float>> copia){
+		ArrayList<Float> centroGravedad = obtenerCentroGravedad(lista);
 		boolean mejora = false;
 		//repetir hasta que no mejore
 		do{
@@ -268,35 +271,35 @@ public class RamificacionPoda {
 	public void ramificacionPoda(int m, ArrayList<ArrayList<Float>> cotaInicial){
 		float cota = dispersion(cotaInicial);
 		System.out.println("Cota inicial: " + cota);
+		//se guarda la ramificacion que se va haciendo
 		ArrayList<ArrayList<ArrayList<Float>>> ramificacion = new ArrayList<>();
-		//ArrayList<ArrayList<Float>> subconjunto = new ArrayList<>();
 		ArrayList<ArrayList<Float>> copiaLista = new ArrayList<>();
-		/**/
+		//se ramifica comparando con la cota
 		for(int i = 0; i < listaCoordenadas.size(); i++){
 			copiaLista = (ArrayList<ArrayList<Float>>) listaCoordenadas.clone();
-			//subconjunto.clear();
 			ArrayList<ArrayList<Float>> subconjunto = new ArrayList<>();
 			subconjunto.add(copiaLista.get(i));
 			copiaLista.remove(i);
+			//se añaden los elementos mas alejados
 			for(int j = 0; j < m - 1; j++){
 				subconjunto.add(obtenerElementoMasAlejado(obtenerCentroGravedad(subconjunto), copiaLista));
 			}
+			//si la dispersion que tiene el subconjunto es mas alta que la cota actual es un camino factible
 			if(dispersion(subconjunto) > cota){
 				ramificacion.add(subconjunto);
 			}
-		}
+		}				
 		
-		
-		
-		
-		System.out.println("Mejoras al grasp:");
+		System.out.println("Mejoras:");
 		for(int i = 0; i < ramificacion.size(); i++){
 			mostrarLista(ramificacion.get(i));
 			System.out.println(dispersion(ramificacion.get(i)));
 			System.out.println("");
 		}
 	}
-	
+	/*
+	 * Calcula la dispersion de un conjunto de puntos
+	 */
 	public float dispersion(ArrayList<ArrayList<Float>> lista){
 		ArrayList<Float> centroGravedad = obtenerCentroGravedad(lista);
 		float dispersion = 0; 
@@ -312,6 +315,7 @@ public class RamificacionPoda {
 		}//endfor
 		return dispersion;
 	} 
+	
 	/*
 	 * metodos de acceso a los atributos
 	 */
