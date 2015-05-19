@@ -1,3 +1,11 @@
+/*
+ * Víctor Hernández Pérez
+ * alu0100697032@ull.edu.es
+ * Grado en ingeniería informática
+ * Tercero 
+ * Itinerario: Computación
+ */
+
 package ramificacion_poda;
 
 import java.io.File;
@@ -315,25 +323,4 @@ public class RamificacionPoda {
 		}//endfor
 		return dispersion;
 	} 
-	
-	/*
-	 * metodos de acceso a los atributos
-	 */
-	public int getNumeroElementos() {
-		return numeroElementos;
-	}
-
-	public void setNumeroElementos(int numeroElementos) {
-		this.numeroElementos = numeroElementos;
-	}
-
-
-	public int getDimensionElemento() {
-		return dimensionElemento;
-	}
-
-
-	public void setDimensionElemento(int dimensionElemento) {
-		this.dimensionElemento = dimensionElemento;
-	}
 }

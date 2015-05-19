@@ -1,3 +1,10 @@
+/*
+ * Víctor Hernández Pérez
+ * alu0100697032@ull.edu.es
+ * Grado en ingeniería informática
+ * Tercero 
+ * Itinerario: Computación
+ */
 package ramificacion_poda;
 
 import java.io.IOException;
